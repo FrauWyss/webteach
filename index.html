@@ -21,9 +21,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 .wrap{max-width:1200px;margin:0 auto;padding:0 28px}
 .banner{background:#cfe4ee;font-size:14px;padding:8px 24px;text-align:center}
 .hero{position:relative;overflow:hidden}
-.bar{max-width:1200px;margin:0 auto;padding:30px 28px 0;display:flex;justify-content:space-between;align-items:center;gap:20px}
+.bar{position:relative;z-index:4;max-width:1200px;margin:0 auto;padding:30px 28px 0;display:flex;justify-content:space-between;align-items:center;gap:20px}
 .lead{font-size:clamp(17px,1.7vw,21px);font-weight:600;margin:0;max-width:30em}
-.mark{position:relative;text-align:center;margin-top:clamp(10px,2vw,26px)}
+.mark{pointer-events:none;position:relative;text-align:center;margin-top:clamp(10px,2vw,26px)}
 h1{font:400 min(24vw,370px)/1.08 var(--head);margin:0;color:var(--moss);text-transform:uppercase;letter-spacing:.005em;white-space:nowrap}
 .leaf{position:absolute;z-index:3;pointer-events:none;width:clamp(58px,10vw,150px)}
 .leaf.a{left:14%;top:17%;transform:rotate(-38deg)}
@@ -75,6 +75,14 @@ main{padding:34px 0 60px}
 .card .t a:focus-visible::after{outline:3px solid var(--blue)}
 .card p{margin:0;font-size:14.5px;line-height:1.42;flex:1}
 .card .d{font-size:13px;color:var(--blue);overflow-wrap:anywhere}
+.foot{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.use{position:relative;z-index:2;flex:none;display:inline-flex;align-items:center;gap:5px;border:0;background:transparent;box-shadow:inset 0 0 0 1.5px var(--line);padding:3px 8px 3px 5px;border-radius:0;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink)}
+.use:hover{box-shadow:inset 0 0 0 1.5px var(--moss)}
+.use.on{background:var(--tab);box-shadow:inset 0 0 0 1.5px var(--moss)}
+.use .n{font-weight:700}
+.pl{display:inline-flex;color:#2f7a55}.pl svg{display:block}.pl.s0{color:#8aa397}.pl.s3{color:#176a70}
+.pl.s1 svg{width:21px;height:21px}.pl.s3 svg{width:26px;height:26px}
+.legend{display:inline-flex;align-items:center;gap:3px;font-size:14px}.legend .pl svg{width:20px;height:20px}
 .star{align-self:flex-start;background:var(--tab);font-size:12.5px;font-weight:700;padding:1px 7px}
 .empty{background:rgba(255,255,255,.85);padding:18px}
 .none{padding:34px;background:#fff;text-align:center}
@@ -125,6 +133,8 @@ main{padding:12px 0 76px}
 .card .t{font-size:16.5px}
 .card p{font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .card .d{display:none}
+.foot{justify-content:flex-end;margin-top:3px}
+.legend{display:none}
 .sheet h3{margin:14px 0 6px;font-size:15px}
 footer{padding-bottom:78px}
 }
@@ -144,7 +154,7 @@ footer{padding-bottom:78px}
 </header>
 <div class="wrap filters">
   <div class="tabs" id="tabs"></div>
-  <div class="row2"><span id="count" aria-live="polite"></span>
+  <div class="row2"><span id="count" aria-live="polite"></span><span class="legend" id="legend"></span>
   <label class="check"><input type="checkbox" id="onlyStar"> Nur Empfehlungen zeigen</label></div>
 </div>
 <main><div class="wrap" id="list"></div></main>
@@ -178,15 +188,19 @@ const domain=u=>{try{return decodeURI(new URL(u).hostname).replace(/^www\./,"").
 const toast=m=>{const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,4500)};
 
 /* Datenzugriff */
-let token=null, demoRows=SEED.map((e,i)=>({id:"s"+i,status:"approved",recommended:false,submitter:null,sort:i,...e})),demoAuth=false;
-const COLS="id,title,category,subgroup,note,url,recommended,sort,created_at";
+let token=null, demoRows=SEED.map((e,i)=>({id:"s"+i,status:"approved",recommended:false,submitter:null,used_count:0,sort:i,...e})),demoAuth=false;
+const COLS="id,title,category,subgroup,note,url,recommended,sort,created_at,used_count";
 async function rest(path,opt={}){
   const r=await fetch(SUPABASE_URL+"/rest/v1/"+path,{...opt,headers:{apikey:SUPABASE_KEY,"Content-Type":"application/json",...(token?{Authorization:"Bearer "+token}:{}),...(opt.headers||{})}});
   if(!r.ok)throw new Error("HTTP "+r.status);
   return r.status===204||r.status===201?null:r.json();
 }
 const api={
-  list:()=>DEMO?Promise.resolve(demoRows.filter(r=>r.status==="approved")):rest(`entries?select=${COLS}&status=eq.approved&order=sort.asc,created_at.asc`),
+  list:async()=>{if(DEMO)return demoRows.filter(r=>r.status==="approved");
+    const q=c=>rest(`entries?select=${c}&status=eq.approved&order=sort.asc,created_at.asc`);
+    try{return await q(COLS)}catch{return q(COLS.replace(",used_count",""))}},
+  use:async(id,delta)=>{if(DEMO){const r=demoRows.find(x=>x.id===id);r.used_count=Math.max(0,(r.used_count||0)+delta);return r.used_count}
+    return rest("rpc/bump_used",{method:"POST",body:JSON.stringify({entry_id:id,delta})})},
   submit:async o=>{if(DEMO){demoRows.push({id:"n"+Date.now(),status:"pending",recommended:false,sort:9999,subgroup:null,...o});return}await rest("entries",{method:"POST",headers:{Prefer:"return=minimal"},body:JSON.stringify(o)})},
   login:async(email,password)=>{if(DEMO){demoAuth=true;return}
     const r=await fetch(SUPABASE_URL+"/auth/v1/token?grant_type=password",{method:"POST",headers:{apikey:SUPABASE_KEY,"Content-Type":"application/json"},body:JSON.stringify({email,password})});
@@ -205,6 +219,33 @@ function renderTabs(){
   CATS.forEach(([n,,tab])=>t.append(el("button",{class:"tab",style:"--tab:"+tab,ariaPressed:String(active===n),onclick:()=>{active=active===n?null:n;render()}},n)));
   t.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.ariaPressed));
 }
+const SVG={
+ seed:'<path d="M12 21v-7" /><path d="M12 15c0-3 2-5 5-5 0 3-2 5-5 5Z"/><path d="M12 15c0-3-2-5-5-5 0 3 2 5 5 5Z"/>',
+ sprout:'<path d="M12 22v-9"/><path d="M12 14c0-4 3-7 8-7 0 4-3 7-8 7Z" fill="currentColor"/><path d="M12 16c0-3-2-6-7-6 0 3 2 6 7 6Z" fill="currentColor"/>',
+ plant:'<path d="M12 22V6"/><path d="M12 11c0-4 3-7 7-8 1 4-2 8-7 8Z" fill="currentColor"/><path d="M12 13c0-3-3-6-7-6-1 4 2 6 7 6Z" fill="currentColor"/><path d="M12 18c1-3 4-5 8-4-1 3-4 5-8 4Z" fill="currentColor"/><path d="M12 19c-1-2-4-4-7-3 1 3 4 4 7 3Z" fill="currentColor"/>',
+ tree:'<path d="M12 22v-8M12 17l-3-3M12 16l3-3" stroke-width="2"/><path d="M12 2c3 0 5 2 5 4 2 1 3 3 2 5s-3 3-5 2c-1 1-3 1-4 0-2 1-4 0-5-2s0-4 2-5c0-2 2-4 5-4Z" fill="currentColor"/>'};
+const stage=n=>n>=20?3:n>=5?2:n>=1?1:0;
+const STAGE=["seed","sprout","plant","tree"],STAGE_NAME=["Noch nicht eingesetzt","Setzling","Pflanze","Baum"];
+const usedKey="webteach-eingesetzt";
+let used=new Set();try{used=new Set(JSON.parse(localStorage.getItem(usedKey)||"[]"))}catch{}
+const saveUsed=()=>{try{localStorage.setItem(usedKey,JSON.stringify([...used]))}catch{}};
+const svgIcon=k=>{const w=document.createElement("span");w.className="pl s"+STAGE.indexOf(k);w.innerHTML=`<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${SVG[k]}</svg>`;return w};
+function useBtn(e){
+  const b=el("button",{class:"use",type:"button"});
+  const paint=()=>{const n=e.used_count||0,on=used.has(e.id);b.replaceChildren(svgIcon(STAGE[stage(n)]),el("span",{class:"lbl"},"Eingesetzt"),el("span",{class:"n"},String(n)));
+    b.classList.toggle("on",on);b.setAttribute("aria-pressed",String(on));
+    b.title=(on?"Markierung entfernen":"Ich habe dieses Tool im Unterricht eingesetzt")+` (${STAGE_NAME[stage(n)]})`;
+    b.setAttribute("aria-label",`${e.title}: im Unterricht eingesetzt, ${n} Mal`)};
+  paint();
+  b.onclick=async ev=>{ev.preventDefault();ev.stopPropagation();if(b.disabled)return;b.disabled=true;
+    const on=used.has(e.id),delta=on?-1:1;
+    try{const n=await api.use(e.id,delta);if(typeof n==="number")e.used_count=n;else throw 0;
+      if(on)used.delete(e.id);else used.add(e.id);saveUsed();paint()}
+    catch{toast("Das hat nicht geklappt. Versuche es noch einmal.")}
+    b.disabled=false};
+  return b;
+}
+const rank=e=>(e.recommended?10:0)+stage(e.used_count||0);
 function icon(e){
   const box=el("span",{class:"ico","aria-hidden":"true"},(e.title||"?").trim().charAt(0).toUpperCase());
   let host="";try{host=new URL(e.url).hostname}catch{}
@@ -222,7 +263,7 @@ function card(e){
   return el("article",{class:"card"},
     e.recommended?el("span",{class:"star"},"★ Empfehlung"):null,
     el("div",{class:"head"},icon(e),el("h4",{class:"t"},u?el("a",{href:u,target:"_blank",rel:"noopener noreferrer"},e.title):e.title)),
-    el("p",{},e.note||""),el("span",{class:"d"},domain(e.url)));
+    el("p",{},e.note||""),el("div",{class:"foot"},el("span",{class:"d"},domain(e.url)),useBtn(e)));
 }
 function render(){
   renderTabs();
@@ -240,7 +281,7 @@ function render(){
     const sheet=el("div",{class:"sheet"});
     if(!items.length){sheet.append(el("div",{class:"empty"},"Hier ist noch nichts eingetragen. ",el("a",{href:"#",onclick:ev=>{ev.preventDefault();openSuggest(n)}},"Erstes Tool vorschlagen")))}
     const groups=[...new Set(items.map(e=>e.subgroup||""))];
-    groups.forEach(g=>{if(g)sheet.append(el("h3",{},g));sheet.append(el("div",{class:"grid"},...items.filter(e=>(e.subgroup||"")===g).map(card)))});
+    groups.forEach(g=>{if(g)sheet.append(el("h3",{},g));sheet.append(el("div",{class:"grid"},...items.filter(e=>(e.subgroup||"")===g).sort((a,b)=>rank(b)-rank(a)).map(card)))});
     const isOpen=!phone.matches||filtering||active||opened.has(n);
     const sec=el("section",{class:"folder"+(isOpen?" open":""),style:colors(n)});
     if(phone.matches){
@@ -315,7 +356,7 @@ function aRow(e,btns){
   return el("div",{class:"a-row",style:colors(e.category)},el("div",{class:"i"},el("b",{},e.title),
     el("small",{},e.category+(e.subgroup?", "+e.subgroup:"")),e.note?el("small",{},e.note):null,
     el("small",{},u?el("a",{href:u,target:"_blank",rel:"noopener noreferrer"},u):e.url),
-    e.submitter?el("small",{},"Von: "+e.submitter):null),el("div",{class:"a-acts"},...btns));
+    e.submitter?el("small",{},"Von: "+e.submitter):null,e.status==="approved"?el("small",{},"Eingesetzt: "+(e.used_count||0)):null),el("div",{class:"a-acts"},...btns));
 }
 const B=(t,cls,fn)=>el("button",{class:"btn small "+cls,type:"button",onclick:fn},t);
 async function renderAdmin(){
@@ -340,6 +381,7 @@ $("#suggest").onclick=()=>openSuggest();
 $("#suggest2").onclick=ev=>{ev.preventDefault();openSuggest()};
 phone.addEventListener("change",render);$("#q").oninput=render;$("#onlyStar").onchange=render;
 window.addEventListener("hashchange",route);
+$("#legend").append("So wächst ein Tool: ",svgIcon("sprout")," ab 1 Einsatz, ",svgIcon("plant")," ab 5, ",svgIcon("tree")," ab 20");
 $("#demo").hidden=!DEMO;
 route();
 </script>
