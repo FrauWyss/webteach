@@ -43,6 +43,8 @@ h1{font:400 min(24vw,370px)/1.08 var(--head);margin:0;color:var(--moss);text-tra
 .btn.danger:hover{background:#fbe9e7}
 .tabs{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .tab{border:0;background:var(--tab,#fff);padding:6px 13px;border-radius:0;cursor:pointer;font-size:15px;font-weight:600}
+.fold{all:unset;box-sizing:border-box;display:flex;align-items:baseline;gap:10px;width:100%;cursor:pointer}
+.fold:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
 .tab:hover{box-shadow:inset 0 -3px 0 var(--moss)}
 .tab[aria-pressed=true]{background:var(--moss);color:#fff}
 .tab.all{background:#fff;box-shadow:inset 0 0 0 1.5px var(--line)}
@@ -100,7 +102,32 @@ label.l input,label.l select,label.l textarea{font-weight:400;width:100%;padding
 .a-row small{display:block;color:var(--ink);overflow-wrap:anywhere}
 .a-acts{display:flex;gap:6px;flex-wrap:wrap}
 [hidden]{display:none!important}
-@media(max-width:600px){.wrap,.bar{padding-left:14px;padding-right:14px}.bar{padding-top:18px;align-items:flex-start}.folder{padding:20px 18px 24px}.btn#suggest{flex:none}}
+@media(max-width:640px){
+.wrap,.bar{padding-left:14px;padding-right:14px}
+.bar{padding-top:16px}.lead{font-size:15.5px}
+#suggest{position:fixed;right:12px;bottom:12px;z-index:6;padding:13px 16px;box-shadow:0 3px 12px rgba(23,55,45,.35)}
+.hills{min-height:112px;margin-top:-30px}
+.band{padding:2px 0 14px}.search input{padding:13px 14px;font-size:17px}
+.filters{position:sticky;top:0;z-index:5;background:#f7f9f2 url(data:image/webp;base64,UklGRswBAABXRUJQVlA4IMABAACwKwCdASqkAaQBPsFgrVInpaQioAgA8BgJaW7hdftNLb6AFZu14uTkPfbJyHvtlAy9q3x8Joxub9hRWx76HCC7SoFku14uTkPg/dZD32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ9+RtL9PbJyHvtk5D32ych77ZOQ99snIetURcnIe+2TkPfbJyH4MoYB77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIfB+6yHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvtk5D32ych78jaX6e2TkPfbJyHvtk5D32ych77ZOQ99snIe+2TkPfbJyHvuACB77ZOQ99snIe+2TkPfbJyHvtk5D32ych77ZOQ99snIe+2dhI4QXaVAsl2vFych77ZOQ99snIe+2OcGAe+2TkPfbJyHvUEydZD32ych77ZOQ99snIe+2TkPfbJyHvtXHLKr32rIiIdRGEeAAP7/TjiCYpWUxSspilZTFKymKVlMUrKYlvs4NIKOKEAL8qBa8IAX5UC2YQBJOcqBNyEAL8qBa8IAX5UDROeEAGMVAteEAL8qBbMIAYpUC1/Qf5d84FnhaBAA);padding:10px 14px 8px}
+.tabs{flex-wrap:nowrap;overflow-x:auto;margin:0 -14px;padding:0 14px 3px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}.tab{flex:none}
+.row2{margin-top:7px;font-size:14px}
+main{padding:12px 0 76px}
+.folder{margin:0 -6px 5px;padding:13px 18px}
+.folder.open{padding-bottom:22px}
+.folder.open::before{-webkit-mask:none;mask:none;opacity:.6}
+.folder:not(.open) .sheet{display:none}
+.folder h2{margin:0;font-size:29px}
+.folder.open h2{margin-bottom:10px}
+.name{flex:1}.num{font:600 14px/1 var(--body);color:var(--soft)}.chev{font:700 26px/1 var(--body);width:20px;text-align:center}
+.grid{grid-template-columns:1fr;gap:6px}
+.card{min-height:0;padding:10px 12px;gap:3px}
+.card .t{font-size:16.5px}
+.card p{font-size:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.card .d{display:none}
+.sheet h3{margin:14px 0 6px;font-size:15px}
+footer{padding-bottom:78px}
+}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 </style>
 </head>
@@ -123,7 +150,7 @@ label.l input,label.l select,label.l textarea{font-weight:400;width:100%;padding
 <main><div class="wrap" id="list"></div></main>
 </div>
 <div id="admin" class="admin" hidden><main><div class="wrap" id="adminBody"></div></main></div>
-<footer><div class="wrap"><span>Fehlt ein gutes Tool? Schlag es vor.</span><span><a href="#" id="toggleAdmin">Verwaltung</a></span></div></footer>
+<footer><div class="wrap"><span>Fehlt ein gutes Tool? <a href="#" id="suggest2">Tool vorschlagen</a></span><span><a href="#" id="toggleAdmin">Verwaltung</a></span></div></footer>
 
 <dialog id="dlg"><form class="f" id="form" novalidate></form></dialog>
 <div class="toast" id="toast" role="status" hidden></div>
@@ -171,7 +198,7 @@ const api={
 const authed=()=>DEMO?demoAuth:!!token;
 
 /* Öffentliche Ansicht */
-let rows=[],active=null;
+let rows=[],active=null;const opened=new Set(),phone=matchMedia("(max-width:640px)");
 const norm=s=>(s||"").toLowerCase();
 function renderTabs(){
   const t=$("#tabs");t.replaceChildren(el("button",{class:"tab all",ariaPressed:String(!active),onclick:()=>{active=null;render()}},"Alle"));
@@ -214,7 +241,15 @@ function render(){
     if(!items.length){sheet.append(el("div",{class:"empty"},"Hier ist noch nichts eingetragen. ",el("a",{href:"#",onclick:ev=>{ev.preventDefault();openSuggest(n)}},"Erstes Tool vorschlagen")))}
     const groups=[...new Set(items.map(e=>e.subgroup||""))];
     groups.forEach(g=>{if(g)sheet.append(el("h3",{},g));sheet.append(el("div",{class:"grid"},...items.filter(e=>(e.subgroup||"")===g).map(card)))});
-    box.append(el("section",{class:"folder",style:colors(n)},el("h2",{},n),sheet));
+    const isOpen=!phone.matches||filtering||active||opened.has(n);
+    const sec=el("section",{class:"folder"+(isOpen?" open":""),style:colors(n)});
+    if(phone.matches){
+      const chev=el("span",{class:"chev","aria-hidden":"true"},isOpen?"−":"+");
+      const btn=el("button",{class:"fold",type:"button","aria-expanded":String(isOpen)},el("span",{class:"name"},n),el("span",{class:"num"},String(items.length)),chev);
+      btn.onclick=()=>{const o=!sec.classList.contains("open");sec.classList.toggle("open",o);chev.textContent=o?"−":"+";btn.setAttribute("aria-expanded",String(o));if(o)opened.add(n);else opened.delete(n)};
+      sec.append(el("h2",{},btn),sheet);
+    }else sec.append(el("h2",{},n),sheet);
+    box.append(sec);
   });
   if(!shown){
     box.append(el("div",{class:"none"},star&&!rows.some(e=>e.recommended)?"Es sind noch keine Empfehlungen markiert.":"Keine Tools gefunden. Versuche einen anderen Suchbegriff oder schlag das Tool vor."));
@@ -230,6 +265,7 @@ const field=(lab,hint,ctrl)=>el("label",{class:"l"},lab,hint?el("small",{},hint)
 const catSelect=v=>el("select",{name:"category",required:true},el("option",{value:""},"Bitte wählen"),...CATS.map(([n])=>el("option",{value:n,selected:n===v},n)));
 function fixUrl(v){v=v.trim();if(v&&!/^https?:\/\//i.test(v))v="https://"+v;return v}
 function validate(o){if(!o.title)return"Gib einen Namen an.";if(!o.category)return"Wähle ein Fach aus.";if(!safeUrl(o.url)||!domain(o.url).includes("."))return"Gib einen gültigen Link an, z. B. https://beispiel.ch.";return""}
+function showDlg(){const d=$("#dlg");if(d.open)d.close();d.showModal()}
 function openSuggest(pre){
   const f=$("#form"),msg=el("p",{class:"msg",role:"alert"});
   f.replaceChildren(el("h2",{},"Tool vorschlagen"),el("p",{},"Dein Vorschlag erscheint, sobald er geprüft und freigegeben ist."),
@@ -245,7 +281,7 @@ function openSuggest(pre){
     const o={title:d.get("title").trim(),category:d.get("category"),url:fixUrl(d.get("url")),note:d.get("note").trim()||null,submitter:d.get("submitter").trim()||null};
     const err=validate(o);if(err){msg.textContent=err;return}
     try{await api.submit(o);$("#dlg").close();toast("Vorschlag gesendet. Danke!")}catch{msg.textContent="Der Vorschlag konnte nicht gesendet werden. Versuche es noch einmal."}};
-  $("#dlg").showModal();
+  showDlg();
 }
 function openEdit(e){
   const f=$("#form"),msg=el("p",{class:"msg",role:"alert"});
@@ -259,7 +295,7 @@ function openEdit(e){
     const o={title:d.get("title").trim(),category:d.get("category"),subgroup:d.get("subgroup").trim()||null,url:fixUrl(d.get("url")),note:d.get("note").trim()||null};
     const err=validate(o);if(err){msg.textContent=err;return}
     try{await api.update(e.id,o);$("#dlg").close();toast("Änderungen gespeichert.");renderAdmin()}catch{msg.textContent="Die Änderungen konnten nicht gespeichert werden."}};
-  $("#dlg").showModal();
+  showDlg();
 }
 
 /* Verwaltung */
@@ -301,7 +337,8 @@ function route(){
 }
 $("#toggleAdmin").onclick=ev=>{ev.preventDefault();location.hash=location.hash==="#verwaltung"?"":"#verwaltung";if(!location.hash)route()};
 $("#suggest").onclick=()=>openSuggest();
-$("#q").oninput=render;$("#onlyStar").onchange=render;
+$("#suggest2").onclick=ev=>{ev.preventDefault();openSuggest()};
+phone.addEventListener("change",render);$("#q").oninput=render;$("#onlyStar").onchange=render;
 window.addEventListener("hashchange",route);
 $("#demo").hidden=!DEMO;
 route();
