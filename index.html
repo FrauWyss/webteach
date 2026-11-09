@@ -52,6 +52,9 @@ main{padding:34px 0 60px}
 .card .t a:hover{color:var(--blue)}
 .card .t a:focus-visible{outline:0}
 .card .t a:focus-visible::after{outline:3px solid var(--blue)}
+.head{display:flex;align-items:center;gap:9px}
+.ico{flex:none;position:relative;width:28px;height:28px;border-radius:7px;background:var(--bg);display:grid;place-items:center;font:600 15px/1 var(--head);overflow:hidden}
+.ico img{position:absolute;inset:4px;width:20px;height:20px;background:var(--bg)}
 .card p{margin:0;font-size:14.5px;line-height:1.42;flex:1}
 .card .d{font-size:13px;color:var(--blue);overflow-wrap:anywhere}
 .star{align-self:flex-start;background:var(--tab);font-size:12.5px;font-weight:600;border-radius:5px;padding:1px 7px}
@@ -126,7 +129,7 @@ const el=(tag,props={},...kids)=>{const e=document.createElement(tag);for(const 
 const cat=n=>CATS.find(c=>c[0]===n)||[n,"#e8f1f2","#c5dadd"];
 const colors=n=>`--bg:${cat(n)[1]};--tab:${cat(n)[2]}`;
 const safeUrl=u=>{try{const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:null}catch{return null}};
-const domain=u=>{try{return decodeURI(new URL(u).hostname).replace(/^www\./,"")}catch{return ""}};
+const domain=u=>{try{return decodeURI(new URL(u).hostname).replace(/^www\./,"").replace("xn--klzer-jua","kölzer")}catch{return ""}};
 const toast=m=>{const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,4500)};
 
 /* Datenzugriff */
@@ -157,11 +160,23 @@ function renderTabs(){
   CATS.forEach(([n,,tab])=>t.append(el("button",{class:"tab",style:"--tab:"+tab,ariaPressed:String(active===n),onclick:()=>{active=active===n?null:n;render()}},n)));
   t.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.ariaPressed));
 }
+function icon(e){
+  const box=el("span",{class:"ico","aria-hidden":"true"},(e.title||"?").trim().charAt(0).toUpperCase());
+  let host="";try{host=new URL(e.url).hostname}catch{}
+  if(host){
+    const img=el("img",{alt:"",loading:"lazy",referrerPolicy:"no-referrer",width:20,height:20});
+    img.onerror=()=>img.remove();
+    img.onload=()=>{if(img.naturalWidth<8)img.remove()};
+    img.src="https://icons.duckduckgo.com/ip3/"+encodeURIComponent(host)+".ico";
+    box.append(img);
+  }
+  return box;
+}
 function card(e){
   const u=safeUrl(e.url);
   return el("article",{class:"card"},
     e.recommended?el("span",{class:"star"},"★ Empfehlung"):null,
-    el("h4",{class:"t"},u?el("a",{href:u,target:"_blank",rel:"noopener noreferrer"},e.title):e.title),
+    el("div",{class:"head"},icon(e),el("h4",{class:"t"},u?el("a",{href:u,target:"_blank",rel:"noopener noreferrer"},e.title):e.title)),
     el("p",{},e.note||""),el("span",{class:"d"},domain(e.url)));
 }
 function render(){
