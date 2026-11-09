@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WebTeach – digitale Tools für den Unterricht</title>
+<meta name="description" content="Digitale Tools für den Unterricht, von Lehrpersonen empfohlen und nach Fach geordnet.">
+<style>
+:root{--ink:#12384a;--soft:#4b6775;--teal:#0f6f78;--blue:#2259a0;--page:#f0f8f7;--line:#c9dfdf;--white:#fff;
+--head:"Gill Sans","Gill Sans MT","Trebuchet MS",Calibri,sans-serif;--body:"Avenir Next","Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--page);color:var(--ink);font:16px/1.5 var(--body)}
+a{color:var(--blue)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.banner{background:#d5e8f8;font-size:14px;padding:8px 24px;text-align:center}
+header.top{padding:48px 0 12px}
+.brand{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap}
+h1{font:600 clamp(52px,9vw,92px)/.95 var(--head);margin:0;color:var(--teal);letter-spacing:-.01em}
+.lead{font-size:20px;margin:14px 0 0;max-width:34em;color:var(--ink)}
+.btn{border:0;border-radius:8px;padding:11px 18px;background:var(--teal);color:#fff;font-weight:600;cursor:pointer}
+.btn:hover{background:#0b5a62}
+.btn.ghost{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--line)}
+.btn.ghost:hover{background:#e4f1f0}
+.btn.small{padding:6px 11px;font-size:14px}
+.btn.danger{background:#fff;color:#a12a22;box-shadow:inset 0 0 0 1.5px #e6bcb7}
+.btn.danger:hover{background:#fbe9e7}
+.search{margin:30px 0 18px;position:relative}
+.search input{width:100%;padding:15px 18px;font-size:18px;border:2px solid var(--teal);border-radius:10px;background:#fff}
+.tabs{display:flex;flex-wrap:wrap;gap:7px;align-items:center}
+.tab{border:0;background:var(--tab,#fff);padding:6px 13px;border-radius:7px;cursor:pointer;font-size:15px;box-shadow:inset 0 0 0 1.5px transparent}
+.tab[aria-pressed=true]{box-shadow:inset 0 0 0 2.5px var(--ink);font-weight:600}
+.tab.all{background:#fff;box-shadow:inset 0 0 0 1.5px var(--line)}
+.tab.all[aria-pressed=true]{box-shadow:inset 0 0 0 2.5px var(--ink)}
+.row2{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin:16px 0 0;color:var(--soft);font-size:15px}
+.check{display:inline-flex;gap:8px;align-items:center;cursor:pointer;color:var(--ink)}
+.check input{width:18px;height:18px;accent-color:var(--teal)}
+main{padding:34px 0 60px}
+.folder{margin:0 0 42px;scroll-margin-top:12px}
+.folder h2{display:inline-block;margin:0;padding:9px 24px 5px;background:var(--bg);border-radius:12px 12px 0 0;font:600 25px/1.2 var(--head)}
+.sheet{background:var(--bg);border-radius:0 14px 14px 14px;padding:18px}
+.sheet h3{font:600 18px/1.2 var(--head);margin:20px 4px 10px;color:var(--ink)}
+.sheet h3:first-child{margin-top:2px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.card{position:relative;background:#fff;border-radius:9px;padding:14px 15px 12px;display:flex;flex-direction:column;gap:6px;min-height:118px}
+.card:hover{box-shadow:inset 0 0 0 2px var(--tab)}
+.card .t{font:600 19px/1.2 var(--head);margin:0}
+.card .t a{color:var(--ink);text-decoration:none}
+.card .t a::after{content:"";position:absolute;inset:0;border-radius:9px}
+.card .t a:hover{color:var(--blue)}
+.card .t a:focus-visible{outline:0}
+.card .t a:focus-visible::after{outline:3px solid var(--blue)}
+.card p{margin:0;font-size:14.5px;line-height:1.42;flex:1}
+.card .d{font-size:13px;color:var(--blue);overflow-wrap:anywhere}
+.star{align-self:flex-start;background:var(--tab);font-size:12.5px;font-weight:600;border-radius:5px;padding:1px 7px}
+.empty{background:rgba(255,255,255,.75);border-radius:9px;padding:18px}
+.none{padding:34px;background:#fff;border-radius:12px;text-align:center}
+footer{border-top:1.5px solid var(--line);padding:20px 0 32px;color:var(--soft);font-size:14px}
+footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+footer a{color:var(--soft)}
+dialog{border:0;border-radius:14px;padding:0;width:min(560px,calc(100vw - 24px));color:var(--ink)}
+dialog::backdrop{background:rgba(18,56,74,.45)}
+form.f{padding:24px;display:grid;gap:13px}
+form.f h2{font:600 28px/1.1 var(--head);margin:0;color:var(--teal)}
+form.f p{margin:0}
+label.l{display:grid;gap:4px;font-weight:600;font-size:15px}
+label.l small{font-weight:400;color:var(--soft)}
+label.l input,label.l select,label.l textarea{font-weight:400;width:100%;padding:9px 11px;border:1.5px solid #9dbcc0;border-radius:7px;background:#fff}
+.hp{position:absolute;left:-9999px}
+.acts{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.msg{font-size:15px;color:#a12a22;min-height:0}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 18px;border-radius:9px;z-index:9;max-width:calc(100vw - 30px)}
+.admin h2{font:600 30px/1.1 var(--head);color:var(--teal);margin:0 0 12px}
+.admin h3{font:600 22px/1.2 var(--head);margin:32px 0 10px}
+.login{background:#fff;border-radius:12px;max-width:420px}
+.a-row{background:var(--bg,#fff);border-radius:9px;padding:11px 13px;margin:0 0 7px;display:flex;gap:14px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.a-row .i{flex:1;min-width:240px}
+.a-row b{font:600 18px/1.25 var(--head)}
+.a-row small{display:block;color:var(--ink);overflow-wrap:anywhere}
+.a-acts{display:flex;gap:6px;flex-wrap:wrap}
+[hidden]{display:none!important}
+@media(max-width:600px){.wrap{padding:0 14px}header.top{padding-top:28px}.lead{font-size:18px}.sheet{padding:12px}.folder h2{font-size:22px;padding:8px 16px 4px}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="banner" id="demo" hidden>Vorschau: Vorschläge und Änderungen bleiben nur bis zum Neuladen der Seite erhalten.</div>
+<div id="public">
+<header class="top"><div class="wrap">
+  <div class="brand">
+    <div><h1>WebTeach</h1>
+    <p class="lead">Digitale Tools für den Unterricht, von Lehrpersonen empfohlen und nach Fach geordnet.</p></div>
+    <button class="btn" id="suggest">Tool vorschlagen</button>
+  </div>
+  <div class="search"><input id="q" type="search" placeholder="Suchen, z. B. Quiz, Bruchrechnen oder ohne Login" aria-label="Tools durchsuchen"></div>
+  <div class="tabs" id="tabs"></div>
+  <div class="row2"><span id="count" aria-live="polite"></span>
+  <label class="check"><input type="checkbox" id="onlyStar"> Nur Empfehlungen zeigen</label></div>
+</div></header>
+<main><div class="wrap" id="list"></div></main>
+</div>
+<div id="admin" class="admin" hidden><main><div class="wrap" id="adminBody"></div></main></div>
+<footer><div class="wrap"><span>Fehlt ein gutes Tool? Schlag es vor.</span><span><a href="#" id="toggleAdmin">Verwaltung</a></span></div></footer>
+
+<dialog id="dlg"><form class="f" id="form" novalidate></form></dialog>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+/* ===== Hier die beiden Werte aus Supabase eintragen ===== */
+const SUPABASE_URL = "https://mtrvskrropgdewgecziq.supabase.co";
+const SUPABASE_KEY = "sb_publishable_ljIteZ29eAc3PhJGGXpyRA_MPQZyK_s";
+/* ======================================================== */
+
+const CATS=[
+["Classroom Management","#dff3f1","#a9e0da"],["Interdisziplinär","#d8f0f7","#a5dcec"],["KI-Tools","#e8e2fa","#cabff0"],
+["Mathematik","#fbe0dd","#f4b9b3"],["Natur & Technik","#dcf1dc","#aedfae"],["Geografie","#eee0d1","#d8bfa3"],["Geschichte","#eee0d1","#d8bfa3"],
+["Deutsch","#dbe9fa","#aecdf2"],["Englisch","#fbf1c4","#f2dd82"],["Französisch","#fbf1c4","#f2dd82"],["RKE","#f8e3ee","#efbdd6"],
+["Medien & Informatik","#e0e4f9","#b8c2ef"],["WAH","#fde8d3","#f6c899"],["Sport","#ecf5c9","#d2e58e"],["BNE","#d9efe3","#a4d9bc"],["Ausflugsideen","#e4f0d8","#c0dca0"]];
+const SEED=[{"title":"Interaktive Wandtafel","category":"Classroom Management","subgroup":null,"note":"Kostenlose Version zum Ausprobieren; speichern erst mit Konto","url":"https://classroomscreen.com"},{"title":"Geräuschpegel-Überwacher","category":"Classroom Management","subgroup":null,"note":"Visualisiert die Lautstärke im Raum, Mikrofonfreigabe nötig. Kontra: lenkt schnell ab","url":"https://bouncyballs.org"},{"title":"Analoge Uhr / Timer","category":"Classroom Management","subgroup":null,"note":"Zeitmanagement","url":"https://livecloud.online/de/analog-clock"},{"title":"Bewegungspausen","category":"Classroom Management","subgroup":null,"note":"Ideen für Pausen","url":"https://www.schulebewegt.ch"},{"title":"Kahoot","category":"Interdisziplinär","subgroup":"Quiz, Umfragen, Spiele","note":"Online-Quiz","url":"https://create.kahoot.it"},{"title":"Gimkit","category":"Interdisziplinär","subgroup":"Quiz, Umfragen, Spiele","note":"Alternative zu Kahoot","url":"https://www.gimkit.com"},{"title":"Mentimeter","category":"Interdisziplinär","subgroup":"Quiz, Umfragen, Spiele","note":"Umfragen online","url":"https://www.mentimeter.com/app/home"},{"title":"Tweedback","category":"Interdisziplinär","subgroup":"Quiz, Umfragen, Spiele","note":"Interaktive Abstimmungen, Live-Feedback","url":"https://tweedback.de/"},{"title":"Gartic Phone","category":"Interdisziplinär","subgroup":"Quiz, Umfragen, Spiele","note":"Stille Post digital: Wörter zu einem Thema repetieren. Wort ausdenken, fremdes Wort zeichnen, fremde Zeichnung erraten; Runden definieren und losspielen","url":"https://garticphone.com/de"},{"title":"Learning Snacks","category":"Interdisziplinär","subgroup":"Lerneinheiten und Übungen","note":"Kurze Snacks zum Einführen oder Vertiefen, im Layout einer WhatsApp-Konversation. Eigene Snacks möglich","url":"https://www.learningsnacks.de/#/welcome?channel=Learning%20Snacks"},{"title":"ZUM-Unterrichten","category":"Interdisziplinär","subgroup":"Lerneinheiten und Übungen","note":"Kleine Unterrichtseinheiten: wie Wikipedia, mit interaktiven Aufgaben in der Seite","url":"https://unterrichten.zum.de/wiki/Hauptseite"},{"title":"LearningApps","category":"Interdisziplinär","subgroup":"Lerneinheiten und Übungen","note":"Verschiedene Online-Übungen","url":"https://learningapps.org"},{"title":"levrai Online-Übungen","category":"Interdisziplinär","subgroup":"Lerneinheiten und Übungen","note":"Deutsch, Mathematik, Englisch, Geschichte mit Lösungen","url":"https://online-lernen.levrai.de/index.htm"},{"title":"Sofatutor","category":"Interdisziplinär","subgroup":"Lerneinheiten und Übungen","note":"Filme für SuS auf YouTube; Arbeitsmaterial mit kostenpflichtiger Lizenz","url":"https://www.sofatutor.ch"},{"title":"CHATONS-Dienste","category":"Interdisziplinär","subgroup":"Zusammenarbeit und Extras","note":"Kollaborative Textarbeit","url":"https://entraide.chatons.org/de/"},{"title":"MyAdvent","category":"Interdisziplinär","subgroup":"Zusammenarbeit und Extras","note":"Online-Adventskalender gestalten","url":"https://www.myadvent.net/de/"},{"title":"LMVZ Online-Übungen","category":"Mathematik","subgroup":"Üben und Repetieren","note":"Zum Lehrmittel «Mathematik 1–3 Sekundarstufe I»","url":"https://003.lmvz.ch/lehrmittelsites/mathe_sek/de/index.html"},{"title":"Aufgabenfuchs Mathe","category":"Mathematik","subgroup":"Üben und Repetieren","note":"Aufgabensets ohne Login, auch für SuS direkt lösbar","url":"https://mathe.aufgabenfuchs.de/konzept.shtml"},{"title":"Matheaufgaben.net","category":"Mathematik","subgroup":"Üben und Repetieren","note":"Z. B. lineare Funktionen finden und Tore schiessen","url":"https://www.matheaufgaben.net/mathe-online/?Aufgabentyp=Lineare-Funktionen"},{"title":"realmath","category":"Mathematik","subgroup":"Üben und Repetieren","note":"Matheübungen zu verschiedenen Themen","url":"https://realmath.de/Mathematik/abiszmath.php"},{"title":"Schritt für Schritt Mathematik","category":"Mathematik","subgroup":"Üben und Repetieren","note":"Themen schrittweise online üben (genutzt für Gleichungen)","url":"https://www.oebv.at/uebit/schritt_fuer_schritt_mathematik/sfsm_2/app.html#/13713/64992/1"},{"title":"Mathe sicher können","category":"Mathematik","subgroup":"Üben und Repetieren","note":"Repetitionsaufgaben","url":"https://mathe-sicher-koennen.dzlm.de/"},{"title":"Bruchrechnen digital","category":"Mathematik","subgroup":"Üben und Repetieren","note":"Bruchteile und Bruchzahlen greifen und begreifen","url":"https://www.alice.edu.tum.de/bruchrechnen.html#/"},{"title":"GeoGebra Materials","category":"Mathematik","subgroup":"Üben und Repetieren","note":"Geometrie-Übungsaufgaben online","url":"https://www.geogebra.org/materials"},{"title":"99math","category":"Mathematik","subgroup":"Spiele und Warm-ups","note":"3 min Kopfrechnen, kostenloser Account. Warm-up oder Hausaufgabe; Statistik für LP, individuelle Hausaufgaben; auch Verbesserte werden gekürt","url":"https://99math.com/host/dashboard"},{"title":"Countdown","category":"Mathematik","subgroup":"Spiele und Warm-ups","note":"Mit vorgegebenen Zahlen und Rechenarten eine Zielzahl erreichen, allein oder im Wettkampf","url":"https://countdownnumbersgame.com"},{"title":"Wordwall","category":"Mathematik","subgroup":"Spiele und Warm-ups","note":"Mathespiele (Link führt zu «Meine Aktivitäten»)","url":"https://wordwall.net/de/myactivities"},{"title":"Polypad","category":"Mathematik","subgroup":"Visualisieren und Werkzeuge","note":"Interaktives Mathematikboard ohne Konto: Prismen aufklappen, Koordinatensystem, Würfelwahrscheinlichkeit","url":"https://polypad.amplify.com/p#dominoes"},{"title":"Math Whiteboard","category":"Mathematik","subgroup":"Visualisieren und Werkzeuge","note":"Kollaborativ mathematische Probleme lösen","url":"https://www.mathwhiteboard.com/"},{"title":"Koordinatensystem-Generator","category":"Mathematik","subgroup":"Visualisieren und Werkzeuge","note":"Koordinatensysteme in jeder Grösse und Form erstellen und herunterladen","url":"http://xn--klzer-jua.eu/koordinatensystem/2d.html"},{"title":"Berufsbezogene Mathematik (3. Sek)","category":"Mathematik","subgroup":"Weitere","note":"BKD Kompetenzraster, Kanton Bern","url":"https://app-p-kompetenzraster.azurewebsites.net/#/"},{"title":"Frau Mathematte","category":"Mathematik","subgroup":"Weitere","note":"Mathe lernen mit Instagram","url":"https://www.instagram.com/frau_mathematte?igsh=ZzI4c2VyM254dGUw"},{"title":"The True Size","category":"Geografie","subgroup":null,"note":"Ländergrössen vergleichen, ohne Login","url":"https://www.thetruesize.com/"},{"title":"Aufgabenfuchs Erdkunde","category":"Geografie","subgroup":null,"note":"Einfacher Stoff 1. Oberstufe; ohne Login auch für SuS direkt nutzbar","url":"https://www.aufgabenfuchs.de/erdkunde/aufbau-der-erde.shtml"},{"title":"Erdbeben live","category":"Geografie","subgroup":null,"note":"Aktuelle Erdbeben mit Plattenverbindung","url":"https://www.volcanoesandearthquakes.com/region/world"},{"title":"Dollar Street","category":"Geografie","subgroup":null,"note":"Familien nach Monatseinkommen","url":"https://www.gapminder.org/dollar-street"},{"title":"Keep Cool mobil","category":"Geografie","subgroup":null,"note":"Klimawandel-Planspiel, online und kostenlos","url":"http://keep-cool-mobil.de"},{"title":"SEGU","category":"Geschichte","subgroup":null,"note":"Material für den Geschichtsunterricht","url":"https://segu-geschichte.de"},{"title":"GeaCron","category":"Geschichte","subgroup":null,"note":"Historische Karten auf einen Klick","url":"http://geacron.com/home-de/?lang=de"},{"title":"Wie wurde die Schweiz die Schweiz?","category":"Geschichte","subgroup":null,"note":"Schweizer Geschichte, Stationen bis 1848","url":"https://www.swissinfo.ch/ger/geschichte/wie-wurde-die-schweiz-die-schweiz-die-wichtigsten-stationen-bis-1848/45809964"},{"title":"Sozialgeschichte","category":"Geschichte","subgroup":null,"note":"Themenbereiche","url":"https://www.sozialgeschichte.ch"},{"title":"Interaktive Ausstellung Flucht","category":"Geschichte","subgroup":null,"note":"Thema Flucht","url":"https://admin.media-flow.ch/flucht-fuir-de#1136"},{"title":"Hätte ich die Französische Revolution überlebt?","category":"Geschichte","subgroup":null,"note":"Interaktiv zur Französischen Revolution","url":"https://republique.de"},{"title":"German Propaganda Archive","category":"Geschichte","subgroup":null,"note":"Quellen: NS-Parteiplakate 1920–1933","url":"https://research.calvin.edu/german-propaganda-archive/posters1.htm"},{"title":"PhET","category":"Natur & Technik","subgroup":null,"note":"Interaktive Simulationen zum Ausprobieren und Erleben; perfekt als Alternative zum Labor","url":"https://phet.colorado.edu/de/"},{"title":"SimplyScience","category":"Natur & Technik","subgroup":null,"note":"Virtual Lab und weitere Ressourcen","url":"https://www.simplyscience.ch"},{"title":"Berufsbezogen Deutsch lernen (3. Sek)","category":"Deutsch","subgroup":null,"note":"BKD Kompetenzraster, Kanton Bern","url":"https://app-p-kompetenzraster.azurewebsites.net/#/"},{"title":"Sekundarschulvorbereitung","category":"Deutsch","subgroup":null,"note":"Deutsch-Ressourcen","url":"https://www.sekundarschulvorbereitung.ch"},{"title":"Cambridge English","category":"Englisch","subgroup":null,"note":"Aktivitäten für Lernende, u. a. Reading","url":"https://www.cambridgeenglish.org/learning-english/activities-for-learners/?skill=reading"},{"title":"LearnEnglish Teens","category":"Englisch","subgroup":null,"note":"British Council, Ressourcen für Jugendliche","url":"https://learnenglishteens.britishcouncil.org/"},{"title":"BBC Learning English","category":"Englisch","subgroup":null,"note":"Englisch online lernen","url":"https://www.bbc.co.uk/learningenglish/"},{"title":"Perfect English Grammar","category":"Englisch","subgroup":null,"note":"Grammatik","url":"https://www.perfect-english-grammar.com"},{"title":"All Things Grammar","category":"Englisch","subgroup":null,"note":"Grammatik-Arbeitsblätter, Quizzes, Spiele als PDF","url":"https://www.allthingsgrammar.com/"},{"title":"All Things Topics","category":"Englisch","subgroup":null,"note":"Themen-Arbeitsblätter, Spiele, Quizzes, Videos","url":"https://www.allthingstopics.com/"},{"title":"Onestopenglish","category":"Englisch","subgroup":null,"note":"Unterrichtsmaterial","url":"https://www.onestopenglish.com/"},{"title":"Teach-This","category":"Englisch","subgroup":null,"note":"Unterrichtsmaterial","url":"https://www.teach-this.com"},{"title":"Podcast français facile","category":"Französisch","subgroup":null,"note":"Hörverstehen, Französisch lernen","url":"https://www.podcastfrancaisfacile.com"},{"title":"Le point du FLE","category":"Französisch","subgroup":null,"note":"Über 8100 Links zu Ideen und Fiches","url":"https://www.lepointdufle.net/penseigner/enseigner_le_francais.htm"},{"title":"TV5Monde Enseigner","category":"Französisch","subgroup":null,"note":"Unterrichtsmaterial","url":"https://enseigner.tv5monde.com"},{"title":"Kalender der Religionen","category":"RKE","subgroup":null,"note":"Religionsübergreifende Feste und Feiertage im Überblick","url":"https://www.kalender-der-religionen.ch/fetes.php?y=2024&m=2"},{"title":"RU St. Gallen","category":"RKE","subgroup":null,"note":"Unterrichtsimpulse, Inhaltsaspekte und Lebensweltbezug zu den RKE-Kompetenzen","url":"https://www.ru-sg.ch/ubersicht-1-9-klasse.html"},{"title":"Planspiel Deepfakes","category":"Medien & Informatik","subgroup":null,"note":"«Was ist noch echt?» (PDF von Klickwinkel)","url":"https://klickwinkel.de/downloads/tutorials/lehrer/Klickwinkel-Planspiel-Deepfakes-Was-ist-noch-echt.pdf"},{"title":"Planspiel Wirtschaftsordnung","category":"WAH","subgroup":null,"note":"Funktionen und Aufgaben einer Wirtschaftsordnung","url":"https://www.teacheconomy.de/unterrichtsmaterial/soziale-marktwirtschaft/planspiel-wirtschaftsordnung/"},{"title":"Savefood","category":"WAH","subgroup":null,"note":"Lebensmittelverschwendung","url":"https://www.savefood.ch"},{"title":"Sportunterricht.ch","category":"Sport","subgroup":null,"note":"Ressourcen für den Sportunterricht","url":"https://www.sportunterricht.ch"},{"title":"éducation21","category":"BNE","subgroup":null,"note":"Bildung für Nachhaltige Entwicklung, Material auch fächerübergreifend","url":"https://education21.ch/de/bne"},{"title":"Technorama","category":"Ausflugsideen","subgroup":null,"note":"Natur und Technik: anfassen und experimentieren","url":"https://www.technorama.ch/de/home"},{"title":"Mobillab","category":"Ausflugsideen","subgroup":null,"note":"Natur und Technik in SG","url":"https://www.mobillab.ch"},{"title":"Landesmuseum Zürich","category":"Ausflugsideen","subgroup":null,"note":"Geschichte","url":"https://www.landesmuseum.ch/de"}];
+
+const DEMO=!SUPABASE_URL||!SUPABASE_KEY;
+const $=s=>document.querySelector(s);
+const el=(tag,props={},...kids)=>{const e=document.createElement(tag);for(const k in props){if(k==="class")e.className=props[k];else if(k==="style")e.style.cssText=props[k];else if(k.startsWith("on"))e[k]=props[k];else if(k in e&&k!=="list")e[k]=props[k];else e.setAttribute(k,props[k])}e.append(...kids.filter(x=>x!=null));return e};
+const cat=n=>CATS.find(c=>c[0]===n)||[n,"#e8f1f2","#c5dadd"];
+const colors=n=>`--bg:${cat(n)[1]};--tab:${cat(n)[2]}`;
+const safeUrl=u=>{try{const x=new URL(u);return /^https?:$/.test(x.protocol)?x.href:null}catch{return null}};
+const domain=u=>{try{return decodeURI(new URL(u).hostname).replace(/^www\./,"")}catch{return ""}};
+const toast=m=>{const t=$("#toast");t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,4500)};
+
+/* Datenzugriff */
+let token=null, demoRows=SEED.map((e,i)=>({id:"s"+i,status:"approved",recommended:false,submitter:null,sort:i,...e})),demoAuth=false;
+const COLS="id,title,category,subgroup,note,url,recommended,sort,created_at";
+async function rest(path,opt={}){
+  const r=await fetch(SUPABASE_URL+"/rest/v1/"+path,{...opt,headers:{apikey:SUPABASE_KEY,"Content-Type":"application/json",...(token?{Authorization:"Bearer "+token}:{}),...(opt.headers||{})}});
+  if(!r.ok)throw new Error("HTTP "+r.status);
+  return r.status===204||r.status===201?null:r.json();
+}
+const api={
+  list:()=>DEMO?Promise.resolve(demoRows.filter(r=>r.status==="approved")):rest(`entries?select=${COLS}&status=eq.approved&order=sort.asc,created_at.asc`),
+  submit:async o=>{if(DEMO){demoRows.push({id:"n"+Date.now(),status:"pending",recommended:false,sort:9999,subgroup:null,...o});return}await rest("entries",{method:"POST",headers:{Prefer:"return=minimal"},body:JSON.stringify(o)})},
+  login:async(email,password)=>{if(DEMO){demoAuth=true;return}
+    const r=await fetch(SUPABASE_URL+"/auth/v1/token?grant_type=password",{method:"POST",headers:{apikey:SUPABASE_KEY,"Content-Type":"application/json"},body:JSON.stringify({email,password})});
+    if(!r.ok)throw new Error("login");token=(await r.json()).access_token},
+  all:()=>DEMO?Promise.resolve([...demoRows]):rest("entries?select=*&order=sort.asc,created_at.asc"),
+  update:async(id,p)=>{if(DEMO){Object.assign(demoRows.find(r=>r.id===id),p);return}await rest("entries?id=eq."+encodeURIComponent(id),{method:"PATCH",headers:{Prefer:"return=minimal"},body:JSON.stringify(p)})},
+  remove:async id=>{if(DEMO){demoRows=demoRows.filter(r=>r.id!==id);return}await rest("entries?id=eq."+encodeURIComponent(id),{method:"DELETE",headers:{Prefer:"return=minimal"}})}
+};
+const authed=()=>DEMO?demoAuth:!!token;
+
+/* Öffentliche Ansicht */
+let rows=[],active=null;
+const norm=s=>(s||"").toLowerCase();
+function renderTabs(){
+  const t=$("#tabs");t.replaceChildren(el("button",{class:"tab all",ariaPressed:String(!active),onclick:()=>{active=null;render()}},"Alle"));
+  CATS.forEach(([n,,tab])=>t.append(el("button",{class:"tab",style:"--tab:"+tab,ariaPressed:String(active===n),onclick:()=>{active=active===n?null:n;render()}},n)));
+  t.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.ariaPressed));
+}
+function card(e){
+  const u=safeUrl(e.url);
+  return el("article",{class:"card"},
+    e.recommended?el("span",{class:"star"},"★ Empfehlung"):null,
+    el("h4",{class:"t"},u?el("a",{href:u,target:"_blank",rel:"noopener noreferrer"},e.title):e.title),
+    el("p",{},e.note||""),el("span",{class:"d"},domain(e.url)));
+}
+function render(){
+  renderTabs();
+  const q=norm($("#q").value).trim().split(/\s+/).filter(Boolean),star=$("#onlyStar").checked;
+  const hit=rows.filter(e=>(!active||e.category===active)&&(!star||e.recommended)&&q.every(w=>norm([e.title,e.note,e.url,e.category,e.subgroup].join(" ")).includes(w)));
+  const box=$("#list");box.replaceChildren();
+  $("#count").textContent=hit.length===1?"1 Tool":hit.length+" Tools";
+  const filtering=q.length||star;
+  let shown=0;
+  CATS.forEach(([n])=>{
+    if(active&&active!==n)return;
+    const items=hit.filter(e=>e.category===n);
+    if(!items.length&&filtering)return;
+    shown++;
+    const sheet=el("div",{class:"sheet"});
+    if(!items.length){sheet.append(el("div",{class:"empty"},"Hier ist noch nichts eingetragen. ",el("a",{href:"#",onclick:ev=>{ev.preventDefault();openSuggest(n)}},"Erstes Tool vorschlagen")))}
+    const groups=[...new Set(items.map(e=>e.subgroup||""))];
+    groups.forEach(g=>{if(g)sheet.append(el("h3",{},g));sheet.append(el("div",{class:"grid"},...items.filter(e=>(e.subgroup||"")===g).map(card)))});
+    box.append(el("section",{class:"folder",style:colors(n)},el("h2",{},n),sheet));
+  });
+  if(!shown){
+    box.append(el("div",{class:"none"},star&&!rows.some(e=>e.recommended)?"Es sind noch keine Empfehlungen markiert.":"Keine Tools gefunden. Versuche einen anderen Suchbegriff oder schlag das Tool vor."));
+  }
+}
+async function loadPublic(){
+  try{rows=await api.list();render()}
+  catch{$("#list").replaceChildren(el("div",{class:"none"},"Die Tools konnten nicht geladen werden. Lade die Seite neu."))}
+}
+
+/* Formular */
+const field=(lab,hint,ctrl)=>el("label",{class:"l"},lab,hint?el("small",{},hint):null,ctrl);
+const catSelect=v=>el("select",{name:"category",required:true},el("option",{value:""},"Bitte wählen"),...CATS.map(([n])=>el("option",{value:n,selected:n===v},n)));
+function fixUrl(v){v=v.trim();if(v&&!/^https?:\/\//i.test(v))v="https://"+v;return v}
+function validate(o){if(!o.title)return"Gib einen Namen an.";if(!o.category)return"Wähle ein Fach aus.";if(!safeUrl(o.url)||!domain(o.url).includes("."))return"Gib einen gültigen Link an, z. B. https://beispiel.ch.";return""}
+function openSuggest(pre){
+  const f=$("#form"),msg=el("p",{class:"msg",role:"alert"});
+  f.replaceChildren(el("h2",{},"Tool vorschlagen"),el("p",{},"Dein Vorschlag erscheint, sobald er geprüft und freigegeben ist."),
+    field("Name des Tools",null,el("input",{name:"title",maxLength:120,required:true})),
+    field("Fach",null,catSelect(pre)),
+    field("Link",null,el("input",{name:"url",inputMode:"url",maxLength:1000,required:true,placeholder:"https://"})),
+    field("Wozu ist es gut?","Zum Beispiel: Einsatz im Unterricht, ob ein Login nötig ist",el("textarea",{name:"note",rows:3,maxLength:400})),
+    field("Dein Name (freiwillig)","Sichtbar nur für die Verwaltung",el("input",{name:"submitter",maxLength:80,autocomplete:"name"})),
+    el("div",{class:"hp","aria-hidden":"true"},el("label",{},"Website",el("input",{name:"website",tabIndex:-1,autocomplete:"off"}))),
+    msg,el("div",{class:"acts"},el("button",{class:"btn ghost",type:"button",onclick:()=>$("#dlg").close()},"Abbrechen"),el("button",{class:"btn",type:"submit"},"Vorschlag senden")));
+  f.onsubmit=async ev=>{ev.preventDefault();const d=new FormData(f);
+    if(d.get("website")){$("#dlg").close();return}
+    const o={title:d.get("title").trim(),category:d.get("category"),url:fixUrl(d.get("url")),note:d.get("note").trim()||null,submitter:d.get("submitter").trim()||null};
+    const err=validate(o);if(err){msg.textContent=err;return}
+    try{await api.submit(o);$("#dlg").close();toast("Vorschlag gesendet. Danke!")}catch{msg.textContent="Der Vorschlag konnte nicht gesendet werden. Versuche es noch einmal."}};
+  $("#dlg").showModal();
+}
+function openEdit(e){
+  const f=$("#form"),msg=el("p",{class:"msg",role:"alert"});
+  f.replaceChildren(el("h2",{},"Eintrag bearbeiten"),
+    field("Name",null,el("input",{name:"title",value:e.title,maxLength:120})),field("Fach",null,catSelect(e.category)),
+    field("Unterkategorie","Freiwillig",el("input",{name:"subgroup",value:e.subgroup||"",maxLength:80})),
+    field("Link",null,el("input",{name:"url",value:e.url,maxLength:1000})),
+    field("Wozu ist es gut?",null,el("textarea",{name:"note",rows:3,maxLength:400,value:e.note||""})),
+    msg,el("div",{class:"acts"},el("button",{class:"btn ghost",type:"button",onclick:()=>$("#dlg").close()},"Abbrechen"),el("button",{class:"btn",type:"submit"},"Änderungen speichern")));
+  f.onsubmit=async ev=>{ev.preventDefault();const d=new FormData(f);
+    const o={title:d.get("title").trim(),category:d.get("category"),subgroup:d.get("subgroup").trim()||null,url:fixUrl(d.get("url")),note:d.get("note").trim()||null};
+    const err=validate(o);if(err){msg.textContent=err;return}
+    try{await api.update(e.id,o);$("#dlg").close();toast("Änderungen gespeichert.");renderAdmin()}catch{msg.textContent="Die Änderungen konnten nicht gespeichert werden."}};
+  $("#dlg").showModal();
+}
+
+/* Verwaltung */
+function renderLogin(){
+  const b=$("#adminBody"),msg=el("p",{class:"msg",role:"alert"});
+  const f=el("form",{class:"f login"},el("h2",{},"Verwaltung"),
+    DEMO?el("p",{},"In der Vorschau genügt ein Klick auf Anmelden."):null,
+    field("E-Mail",null,el("input",{name:"email",type:"email",autocomplete:"username",required:!DEMO})),
+    field("Passwort",null,el("input",{name:"pw",type:"password",autocomplete:"current-password",required:!DEMO})),
+    msg,el("div",{class:"acts"},el("button",{class:"btn",type:"submit"},"Anmelden")));
+  f.onsubmit=async ev=>{ev.preventDefault();const d=new FormData(f);try{await api.login(d.get("email"),d.get("pw"));renderAdmin()}catch{msg.textContent="E-Mail oder Passwort stimmt nicht."}};
+  b.replaceChildren(f);
+}
+const act=(fn,done)=>async()=>{try{await fn();if(done)toast(done);renderAdmin()}catch{toast("Das hat nicht geklappt. Melde dich neu an und versuche es noch einmal.")}};
+function aRow(e,btns){
+  const u=safeUrl(e.url);
+  return el("div",{class:"a-row",style:colors(e.category)},el("div",{class:"i"},el("b",{},e.title),
+    el("small",{},e.category+(e.subgroup?", "+e.subgroup:"")),e.note?el("small",{},e.note):null,
+    el("small",{},u?el("a",{href:u,target:"_blank",rel:"noopener noreferrer"},u):e.url),
+    e.submitter?el("small",{},"Von: "+e.submitter):null),el("div",{class:"a-acts"},...btns));
+}
+const B=(t,cls,fn)=>el("button",{class:"btn small "+cls,type:"button",onclick:fn},t);
+async function renderAdmin(){
+  const b=$("#adminBody");if(!authed())return renderLogin();
+  let all;try{all=await api.all()}catch{token=null;return renderLogin()}
+  const pend=all.filter(e=>e.status==="pending"),ok=all.filter(e=>e.status==="approved");
+  const remove=(e,w)=>()=>{if(confirm(`«${e.title}» ${w}?`))act(()=>api.remove(e.id),w==="ablehnen"?"Vorschlag abgelehnt.":"Eintrag gelöscht.")()};
+  const out=[el("h2",{},"Verwaltung"),el("h3",{},pend.length?`Neue Vorschläge (${pend.length})`:"Neue Vorschläge")];
+  if(!pend.length)out.push(el("p",{},"Es warten keine Vorschläge auf deine Freigabe."));
+  pend.forEach(e=>out.push(aRow(e,[B("Freigeben","",act(()=>api.update(e.id,{status:"approved"}),"Eintrag freigegeben.")),B("Bearbeiten","ghost",()=>openEdit(e)),B("Ablehnen","danger",remove(e,"ablehnen"))])));
+  out.push(el("h3",{},`Veröffentlichte Einträge (${ok.length})`));
+  ok.forEach(e=>out.push(aRow(e,[B(e.recommended?"★ Empfehlung entfernen":"☆ Als Empfehlung markieren","ghost",act(()=>api.update(e.id,{recommended:!e.recommended}))),B("Bearbeiten","ghost",()=>openEdit(e)),B("Löschen","danger",remove(e,"löschen"))])));
+  b.replaceChildren(...out);
+}
+function route(){
+  const adm=location.hash==="#verwaltung";$("#public").hidden=adm;$("#admin").hidden=!adm;
+  $("#toggleAdmin").textContent=adm?"Zur Übersicht":"Verwaltung";
+  if(adm)renderAdmin();else loadPublic();window.scrollTo(0,0);
+}
+$("#toggleAdmin").onclick=ev=>{ev.preventDefault();location.hash=location.hash==="#verwaltung"?"":"#verwaltung";if(!location.hash)route()};
+$("#suggest").onclick=()=>openSuggest();
+$("#q").oninput=render;$("#onlyStar").onchange=render;
+window.addEventListener("hashchange",route);
+$("#demo").hidden=!DEMO;
+route();
+</script>
+</body>
+</html>
